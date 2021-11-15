@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jai-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jai
+  template:
+    metadata:
+      labels:
+        app: jai
+    spec:
+      volumes:
+      - name: task-pv-storage
+        persistentVolumeClaim:
+          claimName: task-pv-claim
+      containers:
+      - name: web
+        image: nginx:1.20
+        volumeMounts:
+        - mountPath: "/var/log/nginx"
+          name: task-pv-storage
+        ports:
+        - containerPort: 80
